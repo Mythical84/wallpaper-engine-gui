@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { convertFileSrc } from "@tauri-apps/api/core";
-    import { set_wallpaper } from "./wallpaper/wallpaper_handler.svelte";
+	import { set_wallpaper } from "./wallpaper/wallpaper_handler.svelte";
 
 	let { img, wallpaper } = $props()
 

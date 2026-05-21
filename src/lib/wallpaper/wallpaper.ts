@@ -17,3 +17,22 @@ export class Wallpaper {
     }
   }
 }
+
+export class Property {
+	index: number
+	order: number
+
+	constructor(index: number, order: number) {
+		this.index = index
+		this.order = order
+	}
+}
+
+export class Boolean extends Property {
+	value: boolean
+	
+	constructor(json: any) {
+		super(json.index, json.order)
+		this.value = json.value
+	}
+}

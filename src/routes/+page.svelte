@@ -8,7 +8,6 @@
 
 	const WALLPAPER_PATH = ".steam/steam/steamapps/workshop/content/431960";
 
-
 	async function get_img_paths(): Promise<{img: string, wallpaper: Wallpaper}[]> {
 		var imgs: {img: string, wallpaper: Wallpaper}[] = [];
 		const dirPath = await join(await homeDir(), WALLPAPER_PATH);
