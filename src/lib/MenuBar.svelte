@@ -27,7 +27,8 @@
 
 <style>
   main {
+    grid-area: a;
     width: 100vw;
-    height: 8vh;
+    height: 6vh;
   }
 </style>

@@ -1,18 +1,15 @@
 <script lang="ts">
 	import { convertFileSrc } from "@tauri-apps/api/core";
-    import { set_wallpaper } from "./wallpaper/wallpaper_handler.svelte";
 
-	let { img, wallpaper } = $props()
-
-	// svelte-ignore state_referenced_locally
-	const assetUrl = convertFileSrc(img);
+	let { wallpaper, onclick } = $props()
 
 	// svelte-ignore state_referenced_locally
-	const id = img.split("/")[img.split("/").length - 2]
+	const assetUrl = convertFileSrc(wallpaper.preview);
 
-	async function click() {
-		await set_wallpaper(id)
+	function click() {
+		onclick?.(wallpaper)
 	}
+
 </script>
 
 <main>

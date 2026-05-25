@@ -1,14 +1,18 @@
-export class Wallpaper {
-  description: string
-  properties: {}[]
-  title: string
-  preview: string
+import { convertFileSrc } from "@tauri-apps/api/core"
 
-  constructor(project_json: any) {
+export class Wallpaper {
+  public description: string
+  public properties: {}[]
+  public title: string
+  public preview: string
+  public id: number 
+
+  constructor(project_json: any, id: string, preview: string) {
     this.description = project_json.description;
     this.title = project_json.title;
     this.properties = [];
-    this.preview = project_json.preview;
+    this.id = parseInt(id)
+    this.preview = preview
 
     if (project_json.general !== undefined && project_json.general.properties !== undefined) {
       for (const key in project_json.general.properties) {
