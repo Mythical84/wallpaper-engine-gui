@@ -9,6 +9,7 @@ This app hopes to be a fully featured linux implementation of the wallpaper engi
 - [Building](#building)
 - [Roadmap](#roadmap)
 - [Contributing & Feedback](#contributing--feedback)
+- [Screenshots](#screenshots)
 
 ---
 
@@ -76,3 +77,6 @@ Once the build is finished, you'll be able to find the binary in the target/rele
 
 ## Contributing & Feedback
 To contribute, open a pull request, for feedback, open an issue.
+
+## Screenshots
+![Gallery](gallery.png)
