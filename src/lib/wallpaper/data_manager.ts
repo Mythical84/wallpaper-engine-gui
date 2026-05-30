@@ -12,6 +12,7 @@ export async function manager_init() {
 
 export async function apply_saved_wallpapers() {
   const saved = await join(await homeDir(), appdata, "saved_wallpapers.json")
+  if (!await exists(saved)) return;
   const file = JSON.parse(await readTextFile(saved))
   for (let wallpaper in file.wallpapers) {
     set_selected_monitor(file.wallpapers[wallpaper].monitor)
@@ -23,8 +24,8 @@ export async function set_saved_wallpapers(id: string, monitor: string) {
   const saved = await join(await homeDir(), appdata, "saved_wallpapers.json")
   if (!await exists(saved)) {
     const file = await open(saved, {
-      write: true,
-      create: true
+      create: true,
+      write: true
     });
     const papers = {wallpapers: [{ id: id, monitor: monitor }]}
     await file.write(new TextEncoder().encode(JSON.stringify(papers)))
