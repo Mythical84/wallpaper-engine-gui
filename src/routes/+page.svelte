@@ -6,14 +6,15 @@
 	import { read_json } from "$lib/wallpaper/json_tools";
 	import MenuBar from "$lib/MenuBar.svelte";
 	import SideBar from "$lib/SideBar.svelte";
-    import { init } from "$lib/wallpaper/data_manager";
+    import { apply_saved_wallpapers, manager_init } from "$lib/wallpaper/data_manager";
 
 	const WALLPAPER_PATH = ".steam/steam/steamapps/workshop/content/431960";
 
 	let selected_wallpaper = $state()
 
 	async function get_img_paths(): Promise<Wallpaper[]> {
-		await init()
+		await manager_init()
+		await apply_saved_wallpapers()
 		var wallpapers: Wallpaper[] = [];
 		const dirPath = await join(await homeDir(), WALLPAPER_PATH);
 		const dirs = await readDir(dirPath);

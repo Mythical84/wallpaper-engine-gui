@@ -1,5 +1,6 @@
 import { Child, Command } from "@tauri-apps/plugin-shell"
-import { set_saved_wallpapers } from "./data_manager";
+import { apply_saved_wallpapers, set_saved_wallpapers } from "./data_manager";
+import { listen } from "@tauri-apps/api/event"
 
 var wallpapers = new Map<string, Child>()
 var selected_monitor: string = $state("");
@@ -20,3 +21,9 @@ export async function set_wallpaper(id: string, args: string) {
 export function set_selected_monitor(monitor: string) {
   selected_monitor = monitor
 }
+
+listen<string[]>("monitor-connected", (event) => {
+  for (let i = 0; i < event.payload.length; i++) {
+    apply_saved_wallpapers()
+  }
+})

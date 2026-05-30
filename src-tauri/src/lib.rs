@@ -1,5 +1,7 @@
+use std::time::Duration;
+
 use display_info::DisplayInfo;
-use tauri::Manager;
+use tauri::{AppHandle, Emitter, Manager};
 use tauri::menu::{Menu, MenuItem};
 use tauri::tray::TrayIconBuilder;
 
@@ -14,10 +16,31 @@ fn get_monitors() -> Vec<String> {
     return monitors
 }
 
+fn start_monitor_watcher(app: AppHandle) {
+    std::thread::spawn(move || {
+        let mut last_count = 0;
+
+        loop {
+            if let Some(window) = app.get_webview_window("main") {
+                let monitors = window.available_monitors().unwrap_or_default();
+                
+                if monitors.len() > last_count {
+                    let _ = app.emit("monitor-connected", get_monitors());
+                }
+
+                last_count = monitors.len();
+            }
+
+            std::thread::sleep(Duration::from_millis(500));
+        }
+    });
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .setup(|app| {
+            start_monitor_watcher(app.handle().clone());
             let quit_i = MenuItem::with_id(app, "quit", "quit", true, None::<&str>)?;
             let show_i = MenuItem::with_id(app, "show", "show", true, None::<&str>)?;
             let menu = Menu::with_items(app, &[&show_i, &quit_i])?;
