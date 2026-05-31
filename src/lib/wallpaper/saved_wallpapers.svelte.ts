@@ -14,7 +14,7 @@ export async function manager_init() {
 export async function set_wallpaper_path(path: string) {
   wallpaper_path = path
   const file = await open(await join(await homeDir(), appdata, "saved_wallpapers.json"), { create: true, write: true })
-  await file.write(new TextEncoder().encode(JSON.stringify({path: path})))
+  await file.write(new TextEncoder().encode(JSON.stringify({path: path, wallpapers: []})))
   await file.close()
 }
 
