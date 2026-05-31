@@ -69,7 +69,7 @@ Once the build is finished, you'll be able to find the binary in the tauri-src/t
 
 ## Roadmap
 - [x] Set wallpaper engine wallpapers as backgrounds from the gui
-- [ ] Automatic detection of wallpaper engine install directory
+- [x] Automatic detection of wallpaper engine install directory
 - [ ] Debug logs for wallpapers
 - [ ] Ability to change base linux-wallpaperengine properties
 - [ ] Ability to change wallpaper specific properties
