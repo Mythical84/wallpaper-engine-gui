@@ -1,7 +1,8 @@
 import { Child, Command } from "@tauri-apps/plugin-shell"
-import { apply_saved_wallpapers, set_saved_wallpapers } from "./data_manager";
+import { apply_saved_wallpapers, set_saved_wallpapers } from "./saved_wallpapers.svelte";
 import { listen } from "@tauri-apps/api/event"
 
+var wallpaper_directory: string = $state("");
 var wallpapers = new Map<string, Child>()
 var selected_monitor: string = $state("");
 
@@ -20,6 +21,14 @@ export async function set_wallpaper(id: string, args: string) {
 
 export function set_selected_monitor(monitor: string) {
   selected_monitor = monitor
+}
+
+export function set_wallpaper_directory(directory: string) {
+  wallpaper_directory = directory
+}
+
+export function get_wallpaper_directory(): string {
+  return wallpaper_directory;
 }
 
 listen<string[]>("monitor-connected", (event) => {

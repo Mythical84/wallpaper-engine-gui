@@ -36,6 +36,7 @@ sudo dnf install ./wallpaper-engine-gui_<version>_amd64.rpm
 ```
 
 #### Appimage
+Due to a bug with linuxdeploy, my appimage builds are currently 100MB due to being on an arch based distro. If you want smaller builds, I'd recommend building it yourself.
 ```bash
 ./wallpaper-engine-gui_<version>_amd64.appimage
 ```
@@ -58,13 +59,13 @@ npm/bun/pnpm/yarn install
 ```
 
 #### 3. Build the package
-If you want access to the appimage build, you must add NO_STRIP=true before the following command, due to a bug with the appimage build system used by tauri.
+The tool tauri uses for compiling appimages, linuxdeploy, currently has a bug on arch that will cause it to fail without adding NO_STRIP=true before running the following command.
 
 ```bash
 npm/bun/pnpm/yarn run tauri build
 ```
 
-Once the build is finished, you'll be able to find the binary in the target/release folder, while the deb, rpm, and appimage will be in the target/release/bundle folder
+Once the build is finished, you'll be able to find the binary in the tauri-src/target/release folder, while the deb, rpm, and appimage will be in the tauri-src/target/release/bundle folder
 
 ## Roadmap
 - [x] Set wallpaper engine wallpapers as backgrounds from the gui

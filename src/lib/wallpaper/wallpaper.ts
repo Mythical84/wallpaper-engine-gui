@@ -1,5 +1,3 @@
-import { convertFileSrc } from "@tauri-apps/api/core"
-
 export class Wallpaper {
   public description: string
   public properties: {}[]

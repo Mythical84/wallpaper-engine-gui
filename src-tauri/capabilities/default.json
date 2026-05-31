@@ -7,42 +7,16 @@
   ],
   "permissions": [
     "core:default",
-    "opener:default",
     "fs:default",
+    "fs:read-all",
+    "fs:write-all",
+    "fs:allow-mkdir",
+    "fs:allow-exists",
+    "fs:read-dirs",
     {
-      "identifier": "fs:allow-read-dir",
+      "identifier": "fs:scope",
       "allow": [
-        { "path": "$HOME/.steam/steam/steamapps/workshop/content/**/**/*" },
-        { "path": "$HOME/.local/share/**" }
-      ]
-    },
-    {
-      "identifier": "fs:allow-mkdir",
-      "allow": [{ "path": "$HOME/.local/**/*" }]
-    },
-    {
-      "identifier": "fs:allow-exists",
-      "allow": [{ "path": "$HOME/.local/**/**" }]
-    },
-    {
-      "identifier": "fs:allow-read-text-file",
-      "allow": [
-        { "path": "$HOME/.steam/steam/steamapps/workshop/content/**/**/*" },
-        { "path": "$HOME/.local/share/**/*" }
-      ]
-    },
-    {
-      "identifier": "fs:read-all",
-      "allow": [{ "path": "$HOME/.local/share/wallpaper-engine-gui/*" }]
-    },
-    {
-      "identifier": "fs:write-all",
-      "allow": [{ "path": "$HOME/.local/share/wallpaper-engine-gui/*" }]
-    },
-    {
-      "identifier": "fs:allow-write-text-file",
-      "allow": [
-        { "path": "$HOME/.local/share/wallpaper-engine-gui/*" }
+        "**/*"
       ]
     },
     "shell:default",
@@ -61,6 +35,7 @@
         }
       ]
     },
-    "shell:allow-kill"
+    "shell:allow-kill",
+    "dialog:default"
   ]
 }

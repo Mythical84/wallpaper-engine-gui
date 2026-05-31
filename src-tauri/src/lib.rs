@@ -1,9 +1,9 @@
 use std::time::Duration;
 
 use display_info::DisplayInfo;
-use tauri::{AppHandle, Emitter, Manager};
 use tauri::menu::{Menu, MenuItem};
 use tauri::tray::TrayIconBuilder;
+use tauri::{AppHandle, Emitter, Manager};
 
 #[tauri::command]
 fn get_monitors() -> Vec<String> {
@@ -13,7 +13,7 @@ fn get_monitors() -> Vec<String> {
         monitors.push(info.name);
     }
 
-    return monitors
+    return monitors;
 }
 
 fn start_monitor_watcher(app: AppHandle) {
@@ -23,7 +23,7 @@ fn start_monitor_watcher(app: AppHandle) {
         loop {
             if let Some(window) = app.get_webview_window("main") {
                 let monitors = window.available_monitors().unwrap_or_default();
-                
+
                 if monitors.len() > last_count {
                     let _ = app.emit("monitor-connected", get_monitors());
                 }
@@ -39,6 +39,7 @@ fn start_monitor_watcher(app: AppHandle) {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_dialog::init())
         .setup(|app| {
             start_monitor_watcher(app.handle().clone());
             let quit_i = MenuItem::with_id(app, "quit", "quit", true, None::<&str>)?;
@@ -49,20 +50,19 @@ pub fn run() {
                 .menu(&menu)
                 .icon(app.default_window_icon().unwrap().clone())
                 .on_menu_event(|app, event| match event.id.as_ref() {
-                    "quit" => {
-                        app.exit(0)
-                    }
+                    "quit" => app.exit(0),
                     "show" => {
                         app.webview_windows().get("main").unwrap().show().unwrap();
                     }
-                    _ => {panic!("Unsupported menu option")}
+                    _ => {
+                        panic!("Unsupported menu option")
+                    }
                 })
                 .build(app)?;
             Ok(())
         })
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_fs::init())
-        .plugin(tauri_plugin_opener::init())
         .on_window_event(|window, event| match event {
             tauri::WindowEvent::CloseRequested { api, .. } => {
                 api.prevent_close();

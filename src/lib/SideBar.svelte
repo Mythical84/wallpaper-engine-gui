@@ -1,7 +1,6 @@
 <script lang="ts">
   import { convertFileSrc } from "@tauri-apps/api/core";
-    import { set_wallpaper } from "./wallpaper/wallpaper_handler.svelte";
-    import { exists } from "@tauri-apps/plugin-fs";
+  import { set_wallpaper } from "./wallpaper/wallpaper_handler.svelte";
 
   let { wallpaper } = $props()
 
@@ -62,5 +61,4 @@
   button:active {
     background-color: #89b4fa;
   }
-
 </style>
