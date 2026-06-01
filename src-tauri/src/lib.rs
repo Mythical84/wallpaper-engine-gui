@@ -68,7 +68,7 @@ fn check_new_window(state: State<'_, Mutex<bool>>) -> bool {
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
-pub fn run() {
+pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
         .setup(|app| {
@@ -83,7 +83,7 @@ pub fn run() {
                 .menu(&menu)
                 .icon(app.default_window_icon().unwrap().clone())
                 .on_menu_event(|app, event| match event.id.as_ref() {
-                    "quit" => app.exit(0),
+                    "quit" => exit(0),
                     "show" => {
                         if app.get_webview_window("main") == None {
                             WebviewWindowBuilder::new(
@@ -110,8 +110,8 @@ pub fn run() {
         .plugin(tauri_plugin_fs::init())
         .on_window_event(|window, event| match event {
             tauri::WindowEvent::CloseRequested { api, .. } => {
+                window.destroy().unwrap();
                 api.prevent_close();
-                window.hide().unwrap();
             }
             _ => {}
         })
