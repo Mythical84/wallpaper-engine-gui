@@ -1,6 +1,7 @@
 import { homeDir, join } from "@tauri-apps/api/path"
 import { open, exists, mkdir, readTextFile } from "@tauri-apps/plugin-fs"
 import { set_selected_monitor, set_wallpaper } from "./wallpaper_handler.svelte"
+import { invoke } from "@tauri-apps/api/core"
 
 export const appdata = ".local/share/wallpaper-engine-gui"
 let wallpaper_path = $state("")
@@ -26,11 +27,12 @@ export async function apply_saved_wallpapers(): Promise<boolean> {
   const saved = await join(await homeDir(), appdata, "saved_wallpapers.json")
   if (!await exists(saved)) return false;
   const file = JSON.parse(await readTextFile(saved))
+  wallpaper_path = file.path
+  if (await invoke("check_new_window")) return true;
   for (let wallpaper in file.wallpapers) {
     set_selected_monitor(file.wallpapers[wallpaper].monitor)
-    await set_wallpaper(file.wallpapers[wallpaper].id, "")
+    await set_wallpaper(file.wallpapers[wallpaper].id, [""])
   }
-  wallpaper_path = file.path
   return true;
 }
 

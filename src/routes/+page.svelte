@@ -8,6 +8,7 @@
 	import PathFinder from "$lib/PathFinder.svelte";
 	import { apply_saved_wallpapers, manager_init } from "$lib/wallpaper/saved_wallpapers.svelte";
 	import { set_wallpaper_path, get_wallpaper_path } from "$lib/wallpaper/saved_wallpapers.svelte";
+    import { invoke } from "@tauri-apps/api/core";
 
 	let selected_wallpaper = $state()
 	let loaded = $state(true)
@@ -23,7 +24,7 @@
 
 	async function get_img_paths() {
 		await manager_init()
-		loaded = await apply_saved_wallpapers()
+		loaded = await apply_saved_wallpapers();
 		if (!loaded) {
 			return;
 		}

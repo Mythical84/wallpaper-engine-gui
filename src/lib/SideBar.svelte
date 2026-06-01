@@ -13,7 +13,7 @@
   })
 
   async function click() {
-    await set_wallpaper(wallpaper.id.toString(), "")
+    await set_wallpaper(wallpaper.id.toString(), [""])
   }
 
 </script>
