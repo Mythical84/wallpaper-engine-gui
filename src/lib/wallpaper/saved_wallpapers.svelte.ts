@@ -24,16 +24,10 @@ export function get_wallpaper_path() {
 }
 
 export async function apply_saved_wallpapers(): Promise<boolean> {
-  const saved = await join(await homeDir(), appdata, "saved_wallpapers.json")
-  if (!await exists(saved)) return false;
-  const file = JSON.parse(await readTextFile(saved))
-  wallpaper_path = file.path
-  if (await invoke("check_new_window")) return true;
-  for (let wallpaper in file.wallpapers) {
-    set_selected_monitor(file.wallpapers[wallpaper].monitor)
-    await set_wallpaper(file.wallpapers[wallpaper].id, [""])
-  }
-  return true;
+	let [success, path] = await invoke('apply_saved_wallpapers');
+	if (success)
+		wallpaper_path = path
+	return success;
 }
 
 export async function set_saved_wallpapers(id: string, monitor: string) {

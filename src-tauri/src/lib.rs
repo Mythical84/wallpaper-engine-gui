@@ -1,4 +1,7 @@
 use std::collections::HashMap;
+use std::env::home_dir;
+use std::fs;
+use std::path::Path;
 use std::process::{Child, Command, exit};
 use std::sync::Mutex;
 use std::time::Duration;
@@ -6,6 +9,7 @@ use std::time::Duration;
 use display_info::DisplayInfo;
 use tauri::menu::{Menu, MenuItem};
 use tauri::tray::TrayIconBuilder;
+use tauri::utils::config::parse;
 use tauri::{AppHandle, Emitter, Manager, State, WebviewWindowBuilder};
 
 #[tauri::command]
@@ -40,16 +44,38 @@ fn start_monitor_watcher(app: AppHandle) {
 }
 
 #[tauri::command]
-fn kill_monitor(state: State<'_, Mutex<HashMap<String, Child>>>, monitor: String) {
-    let mut map = state.lock().unwrap();
-    if map.contains_key(&monitor) {
-        map.get_mut(&monitor).unwrap().kill().unwrap();
+fn apply_saved_wallpapers(new_window: State<'_, Mutex<bool>>, wallpapers: State<'_, Mutex<HashMap<String, Child>>>) -> (bool, String) {
+    let mut path = home_dir().unwrap();
+    path.push(".local/share/wallpaper-engine-gui/saved_wallpapers.json");
+    if !path.exists() {
+        return (false, String::new());
     }
+    let contents = fs::read_to_string(path).unwrap();
+    let parsed = json::parse(&contents).unwrap();
+    let path = parsed["path"].to_owned().to_string();
+
+    if new_window.lock().unwrap().clone() { return (true, path); }
+    
+    let mut map = wallpapers.lock().unwrap();
+    for i in 0..parsed["wallpapers"].len() {
+        let mut cmd = Command::new("linux-wallpaperengine");
+        cmd.args([
+            "--screen-root",
+            parsed["wallpapers"][i]["monitor"].as_str().unwrap(),
+            "--bg",
+            parsed["wallpapers"][i]["id"].as_str().unwrap(),
+        ]);
+        map.insert(parsed["wallpapers"][i]["monitor"].as_str().unwrap().to_owned(), cmd.spawn().unwrap()); 
+    }
+    return (true, path);
 }
 
 #[tauri::command]
 fn set_wallpaper(state: State<'_, Mutex<HashMap<String, Child>>>, monitor: &str, id: &str, args: Vec<&str>) {
     let mut map = state.lock().unwrap();
+    if map.contains_key(monitor) {
+        map.get_mut(monitor).unwrap().kill().unwrap();
+    }
     // let mut cmd = Command::new(format!("sh -c linux-wallpaperengine --screen-root {monitor} --{args} --bg {id}"));
     let mut cmd = Command::new("linux-wallpaperengine");
     cmd.args([
@@ -83,7 +109,14 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
                 .menu(&menu)
                 .icon(app.default_window_icon().unwrap().clone())
                 .on_menu_event(|app, event| match event.id.as_ref() {
-                    "quit" => exit(0),
+                    "quit" => {
+                        let state = app.state::<Mutex<HashMap<String, Child>>>();
+                        let mut map = state.lock().unwrap();
+                        for v in map.values_mut() {
+                            v.kill().unwrap();
+                        }
+                        exit(0);
+                    },
                     "show" => {
                         if app.get_webview_window("main") == None {
                             WebviewWindowBuilder::new(
@@ -115,7 +148,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
             }
             _ => {}
         })
-        .invoke_handler(tauri::generate_handler![get_monitors, kill_monitor, set_wallpaper, check_new_window])
+        .invoke_handler(tauri::generate_handler![get_monitors, set_wallpaper, check_new_window, apply_saved_wallpapers])
         .build(tauri::generate_context!())?
         .run(|_, event| {
             if let tauri::RunEvent::ExitRequested { api, .. } = event {

@@ -7,7 +7,6 @@ var selected_monitor: string = $state("");
 
 export async function set_wallpaper(id: string, args: string[]) {
   if (selected_monitor == "") return
-  await invoke('kill_monitor', { monitor: selected_monitor })
   await invoke('set_wallpaper', { monitor: selected_monitor, id: id, args: args })
   await set_saved_wallpapers(id, selected_monitor)
 }
