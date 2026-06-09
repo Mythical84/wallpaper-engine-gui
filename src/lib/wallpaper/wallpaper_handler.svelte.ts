@@ -22,9 +22,3 @@ export function set_wallpaper_directory(directory: string) {
 export function get_wallpaper_directory(): string {
   return wallpaper_directory;
 }
-
-listen<string[]>("monitor-connected", (event) => {
-  for (let i = 0; i < event.payload.length; i++) {
-    apply_saved_wallpapers()
-  }
-})

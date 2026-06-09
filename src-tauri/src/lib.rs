@@ -1,7 +1,6 @@
 use std::collections::HashMap;
 use std::env::home_dir;
 use std::fs;
-use std::path::Path;
 use std::process::{Child, Command, exit};
 use std::sync::Mutex;
 use std::time::Duration;
@@ -9,7 +8,6 @@ use std::time::Duration;
 use display_info::DisplayInfo;
 use tauri::menu::{Menu, MenuItem};
 use tauri::tray::TrayIconBuilder;
-use tauri::utils::config::parse;
 use tauri::{AppHandle, Emitter, Manager, State, WebviewWindowBuilder};
 
 #[tauri::command]
@@ -32,7 +30,9 @@ fn start_monitor_watcher(app: AppHandle) {
                 let monitors = window.available_monitors().unwrap_or_default();
 
                 if monitors.len() > last_count {
-                    let _ = app.emit("monitor-connected", get_monitors());
+                    for i in 0..monitors.len() {
+                        apply_saved_wallpapers(app.state::<Mutex<bool>>(), app.state::<Mutex<HashMap<String, Child>>>());
+                    }
                 }
 
                 last_count = monitors.len();
