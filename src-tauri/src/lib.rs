@@ -3,6 +3,7 @@ use std::env::home_dir;
 use std::fs;
 use std::process::{Child, Command, exit};
 use std::sync::Mutex;
+use std::thread::sleep;
 use std::time::Duration;
 
 use display_info::DisplayInfo;
@@ -29,7 +30,7 @@ fn start_monitor_watcher(app: AppHandle) {
             if let Some(window) = app.get_webview_window("main") {
                 let monitors = window.available_monitors().unwrap_or_default();
 
-                if monitors.len() > last_count {
+                if monitors.len() > last_count && last_count > 0 {
                     apply_saved_wallpapers(app.state::<Mutex<bool>>(), app.state::<Mutex<HashMap<String, Child>>>());
                 }
 
