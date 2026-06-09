@@ -8,7 +8,7 @@ use std::time::Duration;
 use display_info::DisplayInfo;
 use tauri::menu::{Menu, MenuItem};
 use tauri::tray::TrayIconBuilder;
-use tauri::{AppHandle, Emitter, Manager, State, WebviewWindowBuilder};
+use tauri::{AppHandle, Manager, State, WebviewWindowBuilder};
 
 #[tauri::command]
 fn get_monitors() -> Vec<String> {
@@ -30,9 +30,7 @@ fn start_monitor_watcher(app: AppHandle) {
                 let monitors = window.available_monitors().unwrap_or_default();
 
                 if monitors.len() > last_count {
-                    for i in 0..monitors.len() {
-                        apply_saved_wallpapers(app.state::<Mutex<bool>>(), app.state::<Mutex<HashMap<String, Child>>>());
-                    }
+                    apply_saved_wallpapers(app.state::<Mutex<bool>>(), app.state::<Mutex<HashMap<String, Child>>>());
                 }
 
                 last_count = monitors.len();
