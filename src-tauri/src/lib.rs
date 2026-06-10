@@ -27,18 +27,17 @@ fn start_monitor_watcher(app: AppHandle) {
         let mut last_count = 0;
 
         loop {
-            if let Some(window) = app.get_webview_window("main") {
-                let monitors = window.available_monitors().unwrap_or_default();
+            let monitors = get_monitors();
 
-                if monitors.len() > last_count && last_count > 0 {
-                    apply_saved_wallpapers(app.state::<Mutex<bool>>(), app.state::<Mutex<HashMap<String, Child>>>());
-                }
-
-                last_count = monitors.len();
+            if monitors.len() > last_count && last_count > 0 {
+                apply_saved_wallpapers(app.state::<Mutex<bool>>(), app.state::<Mutex<HashMap<String, Child>>>());
             }
+
+            last_count = monitors.len();
 
             std::thread::sleep(Duration::from_millis(500));
         }
+
     });
 }
 
